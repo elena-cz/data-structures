@@ -1,20 +1,40 @@
 var Tree = function(value) {
   var newTree = {};
   newTree.value = value;
-
-  // your code here
-  newTree.children = null;  // fix me
-
+  newTree.children = [];
+  _.extend(newTree, treeMethods);
   return newTree;
 };
 
 var treeMethods = {};
 
+// Time complexity: Constant - O(1)
 treeMethods.addChild = function(value) {
+  var child = Tree(value);
+  this.children.push(child);  
+  return child;
 };
 
+// Time complexity: Linear - O(n)
 treeMethods.contains = function(target) {
+  var result = false;
+
+  if (this.value === target) {
+    result = true;
+  } 
+  var children = this.children;
+  if (children.length > 0) {  
+    children.forEach(function(child) {
+      var childResults = child.contains(target);
+      result = result || childResults;
+    });      
+  }
+  return result;
+
 };
+
+
+
 
 
 
