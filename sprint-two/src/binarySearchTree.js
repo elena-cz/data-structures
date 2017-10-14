@@ -75,6 +75,40 @@ binaryTreeMethods.depthFirstLog = function(cb) {
   if (this.right) {
     this.right.depthFirstLog(cb);
   }   
+};
+
+// Time complexity - Linear O(n)
+binaryTreeMethods.breadthFirstLog = function(cb, nodes) {
+  // if nodes in undefined then parents should equal [this]
+  // set parents equal to nodes
+  // if the length of nodes is greater than 0 
+      //create empty children array
+      //for each parent node 
+        //call the callback on each nodes value
+        // if left exists push to children
+        // if right exists push to children
+      // call breadthFirstLog on children
+  var parents = nodes;
+  if (parents === undefined) {
+    parents = [this];
+  } else {
+    parents = nodes;
+  }
+
+  if (parents.length > 0) {
+    var children = [];
+    parents.forEach(function(parentNode) {
+      cb(parentNode.value);
+      if (parentNode.left) {
+        children.push(parentNode.left);
+      }
+      if (parentNode.right) {
+        children.push(parentNode.right);
+      }
+    });
+    binaryTreeMethods.breadthFirstLog(cb, children);
+  }
+  
 
 };
 
@@ -83,15 +117,18 @@ binaryTreeMethods.depthFirstLog = function(cb) {
 // Testing
 
 // var ourTree = new BinarySearchTree(8);
-// console.log(JSON.stringify(ourTree));
 // ourTree.insert(5); 
 // ourTree.insert(10); 
 // ourTree.insert(11); 
 // ourTree.insert(4); 
-// console.log(JSON.stringify(ourTree));
+// ourTree.insert(6);
+// ourTree.insert(1);  
 
-// console.log(typeof BinarySearchTree.insert);
+// var array = [];
+// var func = function(value) { array.push(value); };
 
+// ourTree.breadthFirstLog(func);
+// console.log(array);
 
 
 
