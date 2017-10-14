@@ -5,7 +5,7 @@ var HashTable = function() {
   this._storage = LimitedArray(this._limit);
 };
 
-// Time complexity - 
+// Time complexity - Average O(1), worst O(n)
 HashTable.prototype.insert = function(k, v) {
   // get the index for the given key
   // get the bucket stored at index
@@ -35,7 +35,7 @@ HashTable.prototype.insert = function(k, v) {
   }
 };
 
-// Time complexity - 
+// Time complexity - Average O(1), worst O(n)
 HashTable.prototype.retrieve = function(k) {
   // get the index for the given k
   // get the bucket at that index
@@ -55,7 +55,7 @@ HashTable.prototype.retrieve = function(k) {
   }
 };
 
-// Time complexity - 
+// Time complexity - Average O(1), worst O(n)
 HashTable.prototype.remove = function(k) {
   // get index for given k
   // get bucket at given index
