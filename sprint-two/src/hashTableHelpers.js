@@ -17,12 +17,14 @@ var LimitedArray = function(limit) {
   var limitedArray = {};
   limitedArray.get = function(index) {
     checkLimit(index);
-    return storage[index];
+    return storage[index]; // return buckets
   };
+
   limitedArray.set = function(index, value) {
     checkLimit(index);
-    storage[index] = value;
+    storage[index] = value; // value = bucket
   };
+
   limitedArray.each = function(callback) {
     for (var i = 0; i < storage.length; i++) {
       callback(storage[i], i, storage);

@@ -5,15 +5,17 @@ var HashTable = function() {
   this._storage = LimitedArray(this._limit);
 };
 
+// Time complexity - 
 HashTable.prototype.insert = function(k, v) {
-  // Get index for key
-  // Get bucket at index
-  // Check if bucket does not exist (is undefined) 
-  // Add bucket at index --> []
-  // If bucket exisits
-  // If key already exists in bucket
-  // Change value at key
-  // Insert key value in the bucket
+  // get the index for the given key
+  // get the bucket stored at index
+  // if our bucket is undefined
+  // set the value of the bucket with the current pair (nested in another array)
+  // if our bucket at index is not undefined
+  // loop through each item in bucket
+  // to see if any of the keys match k
+  // if the keys match, replace the value with v
+  // otherwise push the new key value pair to this bucket
 
   var index = getIndexBelowMaxForKey(k, this._limit);
   
@@ -31,13 +33,15 @@ HashTable.prototype.insert = function(k, v) {
       }
     });
   }
-  
-  
-  
 };
 
+// Time complexity - 
 HashTable.prototype.retrieve = function(k) {
-  
+  // get the index for the given k
+  // get the bucket at that index
+  // if the bucket is not undefined
+  // loop through each pair in the bucket
+  // if any of the stored keys match k, return the value
   var index = getIndexBelowMaxForKey(k, this._limit);
   var bucket = this._storage.get(index);
   var res;
@@ -49,13 +53,18 @@ HashTable.prototype.retrieve = function(k) {
     }); 
     return res; 
   }
-  
 };
 
+// Time complexity - 
 HashTable.prototype.remove = function(k) {
+  // get index for given k
+  // get bucket at given index
+  // if bucket is not undefined
+  // loop through each pair in the bucket
+  // if the key matches k
+  // remove pair from bucket
   var index = getIndexBelowMaxForKey(k, this._limit);
   var bucket = this._storage.get(index);
-  var res;
   if (bucket !== undefined) {
     bucket.forEach(function(tuple, idx) {
       if (tuple[0] === k) {
@@ -66,15 +75,15 @@ HashTable.prototype.remove = function(k) {
 };
 
 
-var hash = new HashTable;
-//console.log(JSON.stringify(hash._storage));
-hash.insert('cat', 'fiesty');
-hash.insert('dog', 'happy');
-hash.insert('fox', 'quick');
-console.log(hash._storage);
-//console.log(hash.retrieve('dog'));
-hash.remove('dog');
-//console.log(hash.retrieve('dog'));
+// var hash = new HashTable;
+// //console.log(JSON.stringify(hash._storage));
+// hash.insert('cat', 'fiesty');
+// hash.insert('dog', 'happy');
+// hash.insert('fox', 'quick');
+// console.log(hash._storage);
+// //console.log(hash.retrieve('dog'));
+// hash.remove('dog');
+// //console.log(hash.retrieve('dog'));
 
 
 /*
