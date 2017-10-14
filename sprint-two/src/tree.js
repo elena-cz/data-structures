@@ -24,10 +24,14 @@ treeMethods.contains = function(target) {
   } 
   var children = this.children;
   if (children.length > 0) {  
+  //   for (var i = 0; i < children.length; i++) {
+  //     var childResults = children[i].contains(target);
+  //     result = result || childResults;
+  //   }
     children.forEach(function(child) {
       var childResults = child.contains(target);
       result = result || childResults;
-    });      
+    });
   }
   return result;
 

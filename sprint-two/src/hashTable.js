@@ -3,6 +3,7 @@
 var HashTable = function() {
   this._limit = 8;
   this._storage = LimitedArray(this._limit);
+  this._size = 0;
 };
 
 // Time complexity - Average O(1), worst O(n)
@@ -22,6 +23,7 @@ HashTable.prototype.insert = function(k, v) {
   var bucket = this._storage.get(index);
   if (bucket === undefined) {
     bucket = [[k, v]];
+    this._size++;
     this._storage.set(index, bucket);
     console.log(bucket);  
   } else {
@@ -30,6 +32,7 @@ HashTable.prototype.insert = function(k, v) {
         tuple[1] = v;
       } else {
         bucket.push([k, v]);
+        this._size++;
       }
     });
   }
@@ -66,13 +69,21 @@ HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
   var bucket = this._storage.get(index);
   if (bucket !== undefined) {
-    bucket.forEach(function(tuple, idx) {
-      if (tuple[0] === k) {
-        bucket.splice(idx);
+    // bucket.forEach(function(tuple, idx) {
+    //   if (tuple[0] === k) {
+    //     bucket.splice(idx, 1);
+    //     this._size--;
+    //   }
+    // }.bind(this));   
+    for (var i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === k) {
+        bucket.splice(i, 1);
+        this._size--;
       }
-    });   
+    }
   }
 };
+
 
 
 // var hash = new HashTable;

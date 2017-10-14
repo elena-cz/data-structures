@@ -47,6 +47,14 @@ describe('hashTable', function() {
     window.getIndexBelowMaxForKey = oldHashFunction;
   });
 
+  it('should maintain a count of the number of items in hash', function() {
+    hashTable.insert('Lady', 'Gaga');
+    hashTable.insert('Beyonce', 'Knowles');
+    hashTable.insert('Katie', 'Couric');
+    hashTable.remove('Katie');
+    expect(hashTable._size).to.equal(2);
+  });
+
   // (Advanced! Remove the extra "x" when you want the following tests to run)
   xit ('should double in size when needed', function() {
     _.each(people, function(person) {
