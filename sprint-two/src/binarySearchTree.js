@@ -1,12 +1,15 @@
 var BinarySearchTree = function(value) {
-  this.value = value;
-  this.left = null;
-  this.right = null;
+  var binarySearchTree = Object.create(binaryTreeMethods);
+  binarySearchTree.value = value;
+  binarySearchTree.left = null;
+  binarySearchTree.right = null;
+  return binarySearchTree;
 };
 
+var binaryTreeMethods = {};
 
-// Time complexity -
-BinarySearchTree.prototype.insert = function(value) {
+// Time complexity - O(log(n)
+binaryTreeMethods.insert = function(value) {
   // Create new tree for value
   // if value > nodeValue, then go right
     // if rightNode is null
@@ -19,34 +22,59 @@ BinarySearchTree.prototype.insert = function(value) {
     // if leftNode is not null
      // call insert on leftNode
      
-  if (value > this.value) {
-    console.log(this.right + 'right');
-    if (this.right === null) {
-      this.right = new BinarySearchTree(value);
-    } else {
-      this.right.insert(value);
-    }
-  } else {
-    console.log(this.left + 'left');
+  if (value < this.value) {
     if (this.left === null) {
       this.left = new BinarySearchTree(value);
     } else {
       this.left.insert(value);
     }
+  } else {
+    if (this.right === null) {
+      var newNode = new BinarySearchTree(value);
+      this.right = newNode;
+    } else {
+      this.right.insert(value);
+    }
+  }
+};
+
+// Time complexity - Linear O(n)
+binaryTreeMethods.contains = function(value) {
+  // if value equals nodeValue
+    // return true
+  // otherwise if value is less than nodeValue AND node exists
+    // then call contains with leftNode value
+  // otherwise if value is greater than value at rightNode and rightNode exists
+    // then call contains on rightNode value
+  // else return false
+  if (value === this.value) {
+    return true;
+  } else if (value < this.value && this.left) {
+    return this.left.contains(value);
+  } else if (value > this.value && this.right) {
+    return this.right.contains(value);
+  } else {
+    return false;
   }
 
-
 };
 
-// Time complexity -
-BinarySearchTree.prototype.contains = function() {
-  //
+// Time complexity - Linear O(n)
+binaryTreeMethods.depthFirstLog = function(cb) {
+  // call callback on value
+  // if right exists
+    // call depthFirstLog on rightNode
+  // if left exists
+   // call depthFirstLog on leftNode
 
-};
+  cb(this.value);
+  if (this.left) {
+    this.left.depthFirstLog(cb);
+  }
 
-// Time complexity -
-BinarySearchTree.prototype.depthFirstLog = function() {
-  //
+  if (this.right) {
+    this.right.depthFirstLog(cb);
+  }   
 
 };
 
@@ -54,12 +82,15 @@ BinarySearchTree.prototype.depthFirstLog = function() {
 
 // Testing
 
-var ourTree = new BinarySearchTree(8);
-console.log(ourTree + 'ourTree');
-ourTree.insert(5); 
-ourTree.insert(10); 
-ourTree.insert(11); 
-ourTree.insert(4); 
+// var ourTree = new BinarySearchTree(8);
+// console.log(JSON.stringify(ourTree));
+// ourTree.insert(5); 
+// ourTree.insert(10); 
+// ourTree.insert(11); 
+// ourTree.insert(4); 
+// console.log(JSON.stringify(ourTree));
+
+// console.log(typeof BinarySearchTree.insert);
 
 
 
