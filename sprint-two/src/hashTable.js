@@ -1,4 +1,115 @@
+////// Refactored version that uses higher order functions /////
 
+var HashTable = function() {
+  this._limit = 8;
+  this._storage = LimitedArray(this._limit);
+  this._size = 0;
+};
+
+// Time complexity - Average O(1), worst O(n)
+HashTable.prototype.insert = function(k, v) {
+
+  return this._tupleSearch(k, 
+    function(tuple, bucket) {
+      var oldVal = tuple[1];
+      tuple[1] = v;
+      return oldVal;
+    }, 
+    function(bucket) {
+      bucket.push([k, v]);
+      this._size++;
+      
+      if (this._size > this._limit * 0.75) {
+        this._resize(this._limit * 2);
+      }
+
+    });
+};
+
+// Time complexity - Average O(1), worst O(n)
+HashTable.prototype.retrieve = function(k) {
+  return this._tupleSearch(k, 
+    function(tuple) {
+      return tuple[1];
+    });
+};
+
+// Time complexity - Average O(1), worst O(n)
+HashTable.prototype.remove = function(k) {
+
+  return this._tupleSearch(k, 
+    function(tuple, bucket, i) {
+      var removedTuple = tuple;
+      bucket.splice(i, 1);
+      this._size--;
+      
+      if (this._size < this._limit * 0.25) {
+        this._resize(this._limit / 2);
+      }
+
+      return removedTuple;
+    });
+
+};
+
+HashTable.prototype._tupleSearch = function(k, foundCB, notFoundCB) {
+  // get the index for the given key
+  // get the bucket for the given key, or assign to empty array if undefined
+  // set the bucket to that index in storage
+  // look for the key in the bucket
+  // - if found, call the found function
+  // - if not found, call the not found function, or undefined
+
+  var index = getIndexBelowMaxForKey(k, this._limit);
+  var bucket = this._storage.get(index) || [];;
+  this._storage.set(index, bucket);
+
+  for (var i = 0; i < bucket.length; i++) {
+    var tuple = bucket[i];
+    if (tuple[0] === k) {
+      return foundCB.call(this, tuple, bucket, i);
+    }
+  }
+
+  return notFoundCB ? notFoundCB.call(this, bucket) : undefined;
+};
+
+
+HashTable.prototype._resize = function(newLimit) {
+  // store old hashTable storage
+  // Create new limitedArray
+  // Iterate through each item in old hash table
+    // Add item to new hashTable 
+
+  var oldHashTable = this._storage;
+  
+  // min size of 8, return if nothing to do!
+  newLimit = Math.max(newLimit, 8);
+  if (newLimit === this._limit) { return; }
+
+  this._limit = newLimit;
+  this._storage = LimitedArray(newLimit);
+  this._size = 0;
+
+  
+  oldHashTable.each(function(bucket) {
+    if (bucket) {
+      for (var i = 0; i < bucket.length; i++) {
+        var tuple = bucket[i];
+        this.insert(tuple[0], tuple[1]);
+      }
+    }
+  }.bind(this));
+};
+
+
+
+
+
+
+/////// HashTable without higher order functions ///////
+
+/*
 
 var HashTable = function() {
   this._limit = 8;
@@ -116,20 +227,17 @@ HashTable.prototype._resize = function(newLimit) {
     }
   }.bind(this));
 };
+*/
 
 
-
-var hash = new HashTable;
-//console.log(JSON.stringify(hash._storage));
-hash.insert('cat', 'fiesty');
-hash.insert('dog', 'happy');
-hash.insert('fox', 'quick');
-console.log(JSON.stringify(hash));
-hash._resize(16);
-//console.log(hash.retrieve('dog'));
+// var hash = new HashTable;
+// hash.insert('cat', 'fiesty');
+// hash.insert('dog', 'happy');
+// hash.insert('fox', 'quick');
+// console.log(JSON.stringify(hash));
+// hash._resize(16);
 // hash.remove('dog');
-//console.log(hash.retrieve('dog'));
-console.log(JSON.stringify(hash._storage));
+// console.log(JSON.stringify(hash._storage));
 
 /*
  * Complexity: What is the time complexity of the above functions?
