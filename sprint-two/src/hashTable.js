@@ -19,23 +19,29 @@ HashTable.prototype.insert = function(k, v) {
   // otherwise push the new key value pair to this bucket
 
   var index = getIndexBelowMaxForKey(k, this._limit);
-  
-  var bucket = this._storage.get(index);
-  if (bucket === undefined) {
-    bucket = [[k, v]];
-    this._size++;
-    this._storage.set(index, bucket);
-    console.log(bucket);  
-  } else {
-    bucket.forEach(function(tuple) {
-      if (tuple[0] === k) {
-        tuple[1] = v;
-      } else {
-        bucket.push([k, v]);
-        this._size++;
-      }
-    });
+  var bucket = this._storage.get(index) || [];
+
+  for (var i = 0; i < bucket.length; i++) {
+    var tuple = bucket[i];
+    if (tuple[0] === k) {
+      var oldVal = tuple[1];
+      tuple[1] = v;
+      return oldVal;
+    }
   }
+
+  bucket.push([k, v]);
+  this._size++;
+  this._storage.set(index, bucket);
+
+  console.log(bucket);
+
+  if (this._size > this._limit * 0.75) {
+    this._resize(this._limit * 2);
+  }
+
+  return undefined;
+
 };
 
 // Time complexity - Average O(1), worst O(n)
@@ -46,16 +52,17 @@ HashTable.prototype.retrieve = function(k) {
   // loop through each pair in the bucket
   // if any of the stored keys match k, return the value
   var index = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(index);
-  var res;
-  if (bucket !== undefined) {
-    bucket.forEach(function(tuple) {
-      if (tuple[0] === k) {
-        res = tuple[1];
-      }
-    }); 
-    return res; 
+  var bucket = this._storage.get(index) || [];;
+  var result;
+
+  for (var i = 0; i < bucket.length; i++) {
+    var tuple = bucket[i];
+    if (tuple[0] === k) {
+      result = tuple[1];
+    }
   }
+
+  return result; 
 };
 
 // Time complexity - Average O(1), worst O(n)
@@ -68,13 +75,7 @@ HashTable.prototype.remove = function(k) {
   // remove pair from bucket
   var index = getIndexBelowMaxForKey(k, this._limit);
   var bucket = this._storage.get(index);
-  if (bucket !== undefined) {
-    // bucket.forEach(function(tuple, idx) {
-    //   if (tuple[0] === k) {
-    //     bucket.splice(idx, 1);
-    //     this._size--;
-    //   }
-    // }.bind(this));   
+  if (bucket) {
     for (var i = 0; i < bucket.length; i++) {
       if (bucket[i][0] === k) {
         bucket.splice(i, 1);
@@ -82,20 +83,53 @@ HashTable.prototype.remove = function(k) {
       }
     }
   }
+
+  if (this._size < this._limit * 0.25) {
+    this._resize(this._limit / 2);
+  }
+
+};
+
+HashTable.prototype._resize = function(newLimit) {
+  // store old hashTable storage
+  // Create new limitedArray
+  // Iterate through each item in old hash table
+    // Add item to new hashTable 
+
+  var oldHashTable = this._storage;
+  
+  // min size of 8, return if nothing to do!
+  newLimit = Math.max(newLimit, 8);
+  if (newLimit === this._limit) { return; }
+
+  this._limit = newLimit;
+  this._storage = LimitedArray(newLimit);
+  this._size = 0;
+
+  
+  oldHashTable.each(function(bucket) {
+    if (bucket) {
+      for (var i = 0; i < bucket.length; i++) {
+        var tuple = bucket[i];
+        this.insert(tuple[0], tuple[1]);
+      }
+    }
+  }.bind(this));
 };
 
 
 
-// var hash = new HashTable;
-// //console.log(JSON.stringify(hash._storage));
-// hash.insert('cat', 'fiesty');
-// hash.insert('dog', 'happy');
-// hash.insert('fox', 'quick');
-// console.log(hash._storage);
-// //console.log(hash.retrieve('dog'));
+var hash = new HashTable;
+//console.log(JSON.stringify(hash._storage));
+hash.insert('cat', 'fiesty');
+hash.insert('dog', 'happy');
+hash.insert('fox', 'quick');
+console.log(JSON.stringify(hash));
+hash._resize(16);
+//console.log(hash.retrieve('dog'));
 // hash.remove('dog');
-// //console.log(hash.retrieve('dog'));
-
+//console.log(hash.retrieve('dog'));
+console.log(JSON.stringify(hash._storage));
 
 /*
  * Complexity: What is the time complexity of the above functions?
