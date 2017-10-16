@@ -1,4 +1,4 @@
-var LinkedList = function() {
+var DoublyLinkedList = function() {
   var list = {};
   list.head = null;
   list.tail = null;
@@ -13,14 +13,42 @@ var LinkedList = function() {
       list.tail.next = newNode;
     }
 
+    newNode.previous = list.tail;
     list.tail = newNode;
+  };
+
+  list.addToHead = function(value) {
+    var newNode = Node(value);
+
+    if (list.tail === null) {
+      list.tail = newNode;
+    } else {
+      list.head.previous = newNode;
+    }
+    
+    newNode.next = list.head;
+    list.head = newNode;
+
   };
 
   // Time complexity: O(1) - constant
   list.removeHead = function() {
     var removedItem = list.head.value;
-    list.head = list.head.next;  
+    list.head = list.head.next;
+    if (list.head !== null) {
+      list.head.previous = null;  
+    }
+    
     return removedItem;
+  };
+
+  list.removeTail = function(value) {
+    var removedItem = list.tail.value;
+    list.tail = list.tail.previous;
+    if (list.tail !== null) {
+      list.tail.next = null;  
+    }
+    return removedItem;   
   };
 
   // Time complexity: O(n) - linear
@@ -48,6 +76,7 @@ var Node = function(value) {
 
   node.value = value;
   node.next = null;
+  node.previous = null;
 
   return node;
 };
