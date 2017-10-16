@@ -68,4 +68,8 @@ describe('graph', function() {
     expect(graph.hasEdge(3, 5)).to.equal(true);
     expect(graph.hasEdge(5, 5)).to.equal(true);
   });
+
+  it('should use an object to store nodes', function() {
+    expect(Array.isArray(graph.nodes)).to.equal(false);
+  });
 });
